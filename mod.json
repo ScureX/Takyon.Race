@@ -1,0 +1,27 @@
+{
+	"Name": "Takyon.Race",
+	"Description": "race shit idk",
+	"LoadPriority": 0,
+	"RequiredOnClient": false,
+	"Version": "0.0.1",
+	"Scripts": [
+		{
+			"Path": "takyon_race.nut",
+			"RunOn": "SERVER",
+			"ServerCallback": {
+				"After": "RaceInit"
+			}
+		},
+		{
+			"Path": "takyon_buildrace.nut",
+			"RunOn": "SERVER",
+			"ServerCallback": {
+				"After": "BuildRaceInit"
+			}
+		},
+		{
+			"Path": "maps/save_colony.nut",
+			"RunOn": "SERVER"
+		}
+	]
+}
