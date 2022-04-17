@@ -6,13 +6,6 @@
 	"Version": "0.0.1",
 	"Scripts": [
 		{
-			"Path": "takyon_race.nut",
-			"RunOn": "SERVER",
-			"ServerCallback": {
-				"After": "RaceInit"
-			}
-		},
-		{
 			"Path": "takyon_buildrace.nut",
 			"RunOn": "SERVER",
 			"ServerCallback": {
@@ -20,8 +13,29 @@
 			}
 		},
 		{
-			"Path": "maps/save_colony.nut",
+			"Path": "takyon_race.nut",
+			"RunOn": "SERVER",
+			"ServerCallback": {
+				"After": "RaceInit"
+			}
+		},
+		{
+			"Path": "maps/mp_colony02.nut",
 			"RunOn": "SERVER"
+		},
+		{
+			"Path": "maps/mp_black_water_canal.nut",
+			"RunOn": "SERVER"
+		}
+	],
+	"ConVars": [
+		{
+			"Name": "race_admin_uids", // uids of people who can use race commands
+			"DefaultValue": "1006880507304"
+		},
+		{
+			"Name": "race_max_time", // how many seconds a race should go. race will auto-end after 3 people passed finish (or less if there are less online). if ppl dont race tho we still want it to stop
+			"DefaultValue": "60"
 		}
 	]
 }

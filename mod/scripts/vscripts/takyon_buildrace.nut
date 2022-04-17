@@ -1,3 +1,4 @@
+untyped
 global function BuildRaceInit
 
 global struct R_PropSave{
@@ -18,6 +19,8 @@ void function BuildRaceInit(){
 }
 
 bool function PlaceStart(entity player, array<string> args){
+    if(!R_IsAdmin(player))
+		return false
     vector ang = player.GetAngles()  // shield is turned 180 degrees for some reason
     ang.y += 180 
 
@@ -33,6 +36,8 @@ bool function PlaceStart(entity player, array<string> args){
 }
 
 bool function PlaceCheckpoint(entity player, array<string> args){
+    if(!R_IsAdmin(player))
+		return false
     vector ang = player.GetAngles()  // shield is turned 180 degrees for some reason
     ang.y += 180 
 
@@ -48,6 +53,8 @@ bool function PlaceCheckpoint(entity player, array<string> args){
 }
 
 bool function PlaceEnd(entity player, array<string> args){
+    if(!R_IsAdmin(player))
+		return false
     vector ang = player.GetAngles()  // shield is turned 180 degrees for some reason
     ang.y += 180 
 
@@ -62,16 +69,21 @@ bool function PlaceEnd(entity player, array<string> args){
     return true
 }
 
-const string R_HEADER = "global function Save_ColonyInit\n\nglobal array<R_PropSave> props = []\n\nvoid function Save_ColonyInit(){\nprops.clear()\n"
-const string R_FOOTER = "\n}\n\nvoid function AddProp(asset prop, vector location, vector angle, string flag){\nR_PropSave temp\ntemp.prop = prop\ntemp.location =  location\ntemp.angle = angle\ntemp.flag = flag\nprops.append(temp)\n}"
-const string path = "../R2Northstar/mods/Takyon.Race/mod/scripts/vscripts/maps/save_colony.nut"
-
 bool function R_Save(entity player, array<string> args){
+    if(!R_IsAdmin(player))
+		return false
+    string mapName = "ERROR"
+    try{mapName = GetMapName()} catch(e){print("[Race] " + e)}
+
+    string R_HEADER = "global function Save_" + mapName + "_Init\n\nglobal array<R_PropSave> " + mapName + "_props = []\n\nvoid function Save_" + mapName + "_Init(){\n" + mapName + "_props.clear()\n"
+    string R_FOOTER = "\n}\n\nvoid function AddProp(asset prop, vector location, vector angle, string flag){\nR_PropSave temp\ntemp.prop = prop\ntemp.location =  location\ntemp.angle = angle\ntemp.flag = flag\n" + mapName + "_props.append(temp)\n}"
+    string path = "../R2Northstar/mods/Takyon.Race/mod/scripts/vscripts/maps/" + mapName + ".nut"
+
     DevTextBufferClear()
 
     DevTextBufferWrite(R_HEADER)
     foreach(R_PropSave save in propSaves) {
-        DevTextBufferWrite(format("AddProp(%s, %s, %s, \"%s\")\n", save.prop.tostring(), save.location.tostring(), save.angle.tostring(), save.flag.tostring()))
+        DevTextBufferWrite(format("AddProp(%s, %s, %s, \"%s\")\n", save.prop.tostring(), VectorFormatter(save.location), VectorFormatter(save.angle), save.flag))
     }
     DevTextBufferWrite(R_FOOTER)
 
@@ -80,4 +92,12 @@ bool function R_Save(entity player, array<string> args){
 	DevP4Add(path)
 
     return true
+}
+
+string function VectorFormatter( vector vec ) {
+    float x = vec.x
+    float y = vec.y
+    float z = vec.z
+
+    return "< " + x + ", " + y + ", " + z + " >"
 }
